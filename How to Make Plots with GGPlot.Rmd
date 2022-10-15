@@ -35,12 +35,14 @@ library(stringr)
 
 ```
 
+
+# Data Set
+
 ## Load Data from Dropbox
 
 ```{r load-date-from-dropbox}
 
-x <- read.csv("https://www.dropbox.com/s/a7awmqghrb2m145/Big%20Mart%20Dataset%20-%20Sheet1.csv?dl=1")
+Big_Mart_df <- read.csv("https://www.dropbox.com/s/a7awmqghrb2m145/Big%20Mart%20Dataset%20-%20Sheet1.csv?dl=1")
 
 
 ```
-
