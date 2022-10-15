@@ -51,6 +51,8 @@ Big_Mart_df <- read.csv("https://www.dropbox.com/s/a7awmqghrb2m145/Big%20Mart%20
 
 ## Examine Data
 
+### Print the first/last rows of the Big Mart data frame?
+
 ```{r examine-data-1}
 
 head(Big_Mart_df)
@@ -59,19 +61,18 @@ tail(Big_Mart_df)
 
 ```
 
+### What are the column names of the Big Mart data frame?
+
 ```{r examine-data-2}
 
 names(Big_Mart_df)
 
-
-
 ```
 
+### What are the classes of the Big Mart data frame?
 
 ```{r examine-data-3}
-
-
 lapply(Big_Mart_df, class)
 
-
 ```
+
