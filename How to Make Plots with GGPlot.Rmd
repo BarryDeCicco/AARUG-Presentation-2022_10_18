@@ -1,0 +1,46 @@
+---
+title: "How to Make Plots with GGPlot"
+author: "Barry DeCicco"
+date: '2022-10-15'
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Setting up libraries
+
+```{r load-libraries, echo = TRUE}
+
+library(ggplot2)
+library(magrittr)
+library(tidyverse)
+library(kableExtra)
+library(readr)
+library(janitor)
+library(stringr)
+
+```
+
+## Load Data from Dropbox
+
+```{r load-date-from-dropbox}
+
+x <- read.csv("https://www.dropbox.com/s/a7awmqghrb2m145/Big%20Mart%20Dataset%20-%20Sheet1.csv?dl=1")
+
+
+```
+
