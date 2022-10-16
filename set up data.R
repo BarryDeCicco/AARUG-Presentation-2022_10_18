@@ -64,10 +64,29 @@ ggplot(ER_df) +
   aes(x=as.factor(Month_num), y=Month_effect) +
   geom_bar(stat = "summary", fun.y = "mean")
 
-# Set up the COVID and Other Respiratory Rate data:
+#### Set up the COVID and Other Respiratory Rate data:     ####
+
+set.seed(1234567890)
+
+n_rows=nrow(ER_df)
 
 ER_df <- ER_df %>% 
-  dplyr::Admissions_Other = 
+  dplyr::mutate(
+    random_other = rpois(n=n_rows, lambda=10),
+    random_COVID = rpois(n=n_rows, lambda=30),
+    Admissions_Other = Month_effect + Quarter_effect + 
+    random_other,
+    Admission_COVID = ifelse(Period == "Pre-COVID",0,
+      Month_effect + random_COVID)
+    )
+
+####  Plot the data                               ####
+
+
+
+
+
+
 
 
 
@@ -75,15 +94,3 @@ ER_df <- ER_df %>%
 
 save(ER_df, 
      file = "COVID_Mock_Data.Rdata")
-
-
-  
-  
-  
-  
-####  Set up outcome variables                               ####
-
-
-
-set.seed(1234567890)
-
