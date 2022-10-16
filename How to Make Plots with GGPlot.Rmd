@@ -23,18 +23,48 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ## Setting up libraries
 
-```{r load-libraries, echo = TRUE}
 
-library(ggplot2)
+```{r load-packages, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(emmeans)    # for emmeans
+library(lme4) 
+library(flextable)  # for tables with .rtf output
+library(psych)      # for ICC
 library(magrittr)
-library(tidyverse)
-library(kableExtra)
-library(readr)
-library(janitor)
-library(stringr)
-library(lubridate)
-library(zoo)
+library(rmarkdown)  # For pandoc_version()
+library(Hmisc)      # for label()
+library(here)       # for here()
+library(devtools)   # for session_info()
+# library(TFCBTLS)    # for git_report()
 
+library(kableExtra) # for pretty tables
+library(tidyquant)  # for date conversions - zoo()
+
+library(pastecs)    # for stat.desc
+library(tidyverse)
+
+library(readxl)     # For reading in .xlsx and .xsl files, without using Java.
+# library(xlsx)       # to import from Excel (cohort dates)
+
+
+library(janitor)    # for the tabyl command  (nice tables)
+
+library(stringr)    # string work, such as st_detect()
+
+require(gridExtra)  # for printing a grid of plots.
+
+library(broom)      # both of these are for getting nice output
+library("tidyr")    # from linear mixed models.
+
+library("cstatpower")
+library("ggplot2")
+library("effectsize")
+library(hrbrthemes)  # for theme_ipsum()
+
+
+library(foreign)    # for importing SPSS data sets.
+library(robustbase) # for robust MH distances
+library(rrcov)
 
 ```
 
