@@ -24,6 +24,20 @@ When you click the **Knit** button a document will be generated that includes bo
 ## Setting up libraries
 
 
+```{r setup}
+
+# Global chunk options (over-ridden by local chunk options)
+knitr::opts_chunk$set(include  = TRUE, echo = TRUE, error = TRUE, 
+                      message = TRUE, warning = TRUE)
+
+# Declare path to this script relative to the project root directory.
+here::i_am(
+  path = "inst/How to Make Plots with GGPlot.Rmd"
+  )
+
+```
+
+
 ```{r load-packages, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(emmeans)    # for emmeans
