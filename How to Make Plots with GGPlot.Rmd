@@ -32,6 +32,9 @@ library(kableExtra)
 library(readr)
 library(janitor)
 library(stringr)
+library(lubridate)
+library(zoo)
+
 
 ```
 
@@ -43,7 +46,6 @@ library(stringr)
 ```{r load-date-from-dropbox}
 
 Big_Mart_df <- read.csv("https://www.dropbox.com/s/a7awmqghrb2m145/Big%20Mart%20Dataset%20-%20Sheet1.csv?dl=1")
-
 
 ```
 
