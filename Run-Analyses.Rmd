@@ -1,0 +1,653 @@
+---
+title: "Run Analyses"
+author: "Barry DeCicco"
+date: "`r format(Sys.time(), '%Y-%m-%d, %H:%M:%S %Z')`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    number_sections: yes
+    code_folding: hide
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  word_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup-}
+
+# Global chunk options (over-ridden by local chunk options)
+knitr::opts_chunk$set(include  = TRUE, echo = TRUE, error = TRUE, 
+                      message = TRUE, warning = TRUE)
+
+# Declare path to this script relative to the project root directory.
+here::i_am(
+  path = "inst/Run-Analyses.Rmd"
+  )
+
+```
+
+
+
+```{r load-packages, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(emmeans)    # for emmeans
+library(lme4) 
+library(flextable)  # for tables with .rtf output
+library(psych)      # for ICC
+library(magrittr)
+library(rmarkdown)  # For pandoc_version()
+library(Hmisc)      # for label()
+library(here)       # for here()
+library(devtools)   # for session_info()
+# library(TFCBTLS)    # for git_report()
+
+library(kableExtra) # for pretty tables
+library(tidyquant)  # for date conversions - zoo()
+
+library(pastecs)    # for stat.desc
+library(tidyverse)
+
+library(readxl)     # For reading in .xlsx and .xsl files, without using Java.
+# library(xlsx)       # to import from Excel (cohort dates)
+
+
+library(janitor)    # for the tabyl command  (nice tables)
+
+library(stringr)    # string work, such as st_detect()
+
+require(gridExtra)  # for printing a grid of plots.
+
+library(broom)      # both of these are for getting nice output
+library("tidyr")    # from linear mixed models.
+
+library("cstatpower")
+library("ggplot2")
+library("effectsize")
+library(hrbrthemes)  # for theme_ipsum()
+
+
+library(foreign)    # for importing SPSS data sets.
+library(robustbase) # for robust MH distances
+library(rrcov)
+
+```
+
+#  Load the Data
+
+```{r load-Main_Data}
+
+
+load(file = here::here("data/Main_Data.Rdata"))
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+```{r make-count-tables, eval=FALSE}
+
+
+# Overview of Data:
+
+# Counts:
+# 
+# * Count of unique patients (by MRN)
+# * Count of unique visits (by Epic CSN)
+# * Counts by Sex
+# * Counts by Race (FirstRace)
+# * Counts by Alcohol Withdrawal
+# * Counts by CHF
+# * Counts by Period (Pre-, Post-COVID)
+# * 
+# 
+# Summaries of Continuous Variables:
+# 
+# * Age
+
+
+
+Main_Data <- dplyr::filter()
+
+
+ALCWD_CHF_Case_period_table <- Main_Data %>%
+  tabyl(ALCWD_CHF_Case,Period) %>% 
+  adorn_totals("row") %>% 
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+
+View(ALCWD_CHF_Case_period_table)
+
+Sex_Case_period_table <- Main_Data %>%
+  tabyl(Sex,Period) %>% 
+  adorn_totals("row") %>% 
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+View(Sex_Case_period_table)
+
+
+Sex_Case_ALC_period_tabyl <- Main_Data %>%
+  tabyl(ALCWD_CHF_Case, Sex,Period) %>% 
+  adorn_totals("row") %>% 
+  as.data.frame()
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+View(Sex_Case_ALC_period_tabyl)
+class(Sex_Case_ALC_period_tabyl[1])
+
+
+post_ALCWD <- as.data.frame(Sex_Case_ALC_period_tabyl[1]) %>% 
+  dplyr::rename(ALCWD = Post.Covid.ALCWD_CHF_Case) %>% 
+    dplyr::mutate(`Percent-Post-Male` = round(200*Post.Covid.Male/sum(Post.Covid.Male),0),
+                `Percent-Post-Female` = round(200*Post.Covid.Female/sum(Post.Covid.Female),0)
+  ) %>% 
+  dplyr::select(ALCWD,Post.Covid.Male, `Percent-Post-Male`, Post.Covid.Female,`Percent-Post-Female` )
+
+
+pre_ALCWD <- as.data.frame(Sex_Case_ALC_period_tabyl[2]) %>% 
+  dplyr::rename(ALCWD = Pre.Covid.ALCWD_CHF_Case) %>% 
+      dplyr::mutate(`Percent-Pre-Male` = round(200*Pre.Covid.Male/sum(Pre.Covid.Male),0),
+                `Percent-Pre-Female` = round(200*Pre.Covid.Female/sum(Pre.Covid.Female),0)
+  ) %>% 
+  dplyr::select(ALCWD,Pre.Covid.Male, `Percent-Pre-Male`, Pre.Covid.Female,`Percent-Pre-Female` )
+
+Sex_Case_ALC_period_table <- dplyr::left_join(pre_ALCWD,post_ALCWD, by= "ALCWD")
+
+
+
+
+```
+
+
+
+
+```{r make-summary-tables, eval=FALSE}
+
+# CHANGE CODE TO COVER CONTINUOUS VARIABLES:
+  
+# AGE,
+# los inpatient
+# WHAT ELSE?
+
+
+ALCWD_CHF_Case_period_table <- Main_Data %>%
+  tabyl(ALCWD_CHF_Case,Period) %>% 
+  adorn_totals("row") %>% 
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+
+View(ALCWD_CHF_Case_period_table)
+
+Sex_Case_period_table <- Main_Data %>%
+  tabyl(Sex,Period) %>% 
+  adorn_totals("row") %>% 
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+View(Sex_Case_period_table)
+
+
+Sex_Case_ALC_period_tabyl <- Main_Data %>%
+  tabyl(ALCWD_CHF_Case, Sex,Period) %>% 
+  adorn_totals("row") %>% 
+  dplyr::mutate(`Percent-Post` = round(200*`Post-Covid`/sum(`Post-Covid`),0),
+                `Percent-Pre` = round(200*`Pre-Covid`/sum(`Pre-Covid`),0)
+  )
+View(Sex_Case_ALC_period_tabyl)
+class(Sex_Case_ALC_period_tabyl[1])
+
+
+post_ALCWD <- as.data.frame(Sex_Case_ALC_period_tabyl[1]) %>% 
+  dplyr::rename(ALCWD = Post.Covid.ALCWD_CHF_Case) %>% 
+    dplyr::mutate(`Percent-Post-Male` = round(200*Post.Covid.Male/sum(Post.Covid.Male),0),
+                `Percent-Post-Female` = round(200*Post.Covid.Female/sum(Post.Covid.Female),0)
+  ) %>% 
+  dplyr::select(ALCWD,Post.Covid.Male, `Percent-Post-Male`, Post.Covid.Female,`Percent-Post-Female` )
+
+
+pre_ALCWD <- as.data.frame(Sex_Case_ALC_period_tabyl[2]) %>% 
+  dplyr::rename(ALCWD = Pre.Covid.ALCWD_CHF_Case) %>% 
+      dplyr::mutate(`Percent-Pre-Male` = round(200*Pre.Covid.Male/sum(Pre.Covid.Male),0),
+                `Percent-Pre-Female` = round(200*Pre.Covid.Female/sum(Pre.Covid.Female),0)
+  ) %>% 
+  dplyr::select(ALCWD,Pre.Covid.Male, `Percent-Pre-Male`, Pre.Covid.Female,`Percent-Pre-Female` )
+
+Sex_Case_ALC_period_table <- dplyr::left_join(pre_ALCWD,post_ALCWD, by= "ALCWD")
+
+
+
+
+```
+
+
+
+
+```{r table-ED-lcoation-vs-hospital-location-I, eval = FALSE}
+
+with(Main_Data, table(AdmissionLocationName, EdLocationName, useNA = 'always'))
+
+department_df <- Main_Data %>% 
+  dplyr::group_by(AdmissionDepartmentName, EdDepartmentName) %>% 
+  tally() %>% 
+  as.data.frame() %>% 
+  dplyr::arrange(desc(n))
+
+
+View(department_df)
+
+```
+
+
+
+```{r examine-matched-data-sets, eval = FALSE}
+
+dim(Main_Data)
+
+with(Main_Data, table(EncounterEpicCsn, useNA = 'always'))
+with(Main_Data, table(Icd10, useNA = 'always'))   
+
+
+Main_Data %>% 
+  dplyr::group_by(EncounterEpicCsn) %>% 
+  tally() %>% 
+  as.data.frame() %>% 
+  dplyr::rename(Count = n) %>% 
+  dplyr::arrange(desc(Count)) %>% 
+  dplyr::mutate(Proportion = format(round(Count/dim(Main_Data)[1],5), nsmall = 5))
+
+
+ 
+```
+
+
+```{r examine-ChfIndicatedInEncounter, eval = FALSE}
+
+chf_table_df <- Main_Data %>% 
+  dplyr::filter(ChfIndicatedInEncounter == 1) %>% 
+  dplyr::group_by(Icd10, Name) %>% 
+  tally() %>% 
+  as.data.frame() %>% 
+  dplyr::arrange(desc(n))
+
+View(chf_table_df)
+```
+
+
+
+```{r examine-AlcoholWithdrawIndicatedInEncounter, eval = FALSE}
+
+alc_table_df <- Main_Data %>% 
+  dplyr::filter(AlcoholWithdrawIndicatedInEncounter == 1) %>% 
+  dplyr::group_by(Icd10, Name) %>% 
+  tally() %>% 
+  as.data.frame() %>% 
+  dplyr::arrange(desc(n))
+
+View(alc_table_df)
+```
+
+
+```{r table-Acohol-withdrawal-vs-Chf, eval=FALSE}
+
+with(Main_Data, table(AlcoholWithdrawIndicatedInEncounter, ChfIndicatedInEncounter, useNA = 'always'))
+
+
+```
+
+## Examine Locations and Departments:
+
+ED Location Names vs Hospital Location Names,
+ED Department vs Hospital Admitting Department.
+
+
+```{r table-ED-lcoation-vs-hospital-location-II, eval = FALSE}
+
+with(Main_Data, table(AdmissionLocationName, EdLocationName, useNA = 'always'))
+
+location_df <- Main_Data %>% 
+  dplyr::group_by(AdmissionLocationName, EdLocationName) %>% 
+  tally() %>% 
+  as.data.frame() %>% 
+  dplyr::arrange(desc(n))
+
+View(location_df)
+
+```
+
+
+# Plots
+
+## ED Arrivals and Admission **Counts** by Week, flagged by pre-/post-COVID.
+
+
+### Plot ED Arrivals by Date, flagged by pre-/post-COVID.
+
+```{r plot-ED-weekly-arrivals-with-period-flag}
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+ED_Visit_Data <- Main_Data %>% 
+  dplyr::group_by(Period, week = as.Date(cut(EdArrivalDate, "week"))) %>% 
+  tally()
+  
+  
+ED_Visit_Data %>% 
+  ggplot(.,aes(x=week, y=n,  weight= n, color = Period)) +
+  geom_point() +
+  geom_smooth() +
+  ggtitle("ED Visits by Week, All Causes, Pre-/Post-COVID") +
+  ylab("Weekly Count") +
+  xlab("ED Arrival Date (Week)") +
+#  ylim(0,7000) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months")
+
+
+
+```
+
+
+### Plot Inpatient Admission **Counts** by Week, flagged by pre-/post-COVID.
+
+```{r plot-Inpatient-weekly-admissions-counts-with-period-flag}
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+Admission_Data <- Main_Data %>% 
+  dplyr::filter(EdDisposition == "Admit") %>% 
+  dplyr::group_by(Period, week = as.Date(cut(EdArrivalDate, "week"))) %>% 
+  tally()
+  
+  
+Admission_Data %>%   
+  ggplot(.,aes(x=week, y=n, weight= n, color = Period)) +
+  geom_point() +
+  geom_smooth() +
+  ggtitle("Inpatient Admissions by Week, All Causes, Pre-/Post-COVID") +
+  ylab("Weekly Count") +
+  xlab("ED Arrival Date (Week)") +
+#  ylim(0,7000) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months")
+
+```
+
+
+### Plot Inpatient Admission **Rate** by Week, flagged by pre-/post-COVID.
+
+
+```{r plot-Inpatient-weekly-admissions-with-period-flag}
+
+
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+ED_Visit_Data <- ED_Visit_Data %>% dplyr::rename(N_Visit = n)
+Admission_Data <- Admission_Data %>% dplyr::rename(N_Admit = n)
+
+Rate_Data <- dplyr::left_join(ED_Visit_Data,Admission_Data, by = c("Period","week")) %>% 
+  dplyr::mutate(Admission_Rate = round(N_Admit/N_Visit,2)) 
+View(Rate_Data)
+
+
+  
+  
+Rate_Data %>%   
+  ggplot(.,aes(x=week, y=Admission_Rate, weight= N_Visit, color = Period)) +
+  geom_point() +
+  geom_smooth() +
+  ggtitle("Inpatient Admission Rate by Week, All Causes, Pre-/Post-COVID") +
+  ylab("Weekly Admission Rate") +
+  xlab("ED Arrival Date (Week)") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+
+
+
+
+```
+
+
+
+
+## ED Arrivals and Admission **Counts** by Week, flagged by both 
+- Alcohol Withdrawal/CHF
+- Pre-/post-COVID.
+
+### Table ED Visit Counts by Alcohol Withdrawal and CHF:
+
+```{r}
+
+Main_Data %>% 
+  dplyr::group_by(Period,AlcoholWithdrawIndicatedInEncounter,ChfIndicatedInEncounter) %>% 
+  tally() %>% 
+kable(digits=c(0,4,4,6), align=c("r", 'c','c','r') ,
+    caption = "<center><strong>Count of ED Visits by Period (Pre-/Post-COVID), Alcohol Withdrawal and CHF</center></strong>",
+    col.names= c("Period", "Alcohol <br/>Withdrawal <br/>Indicated", "CHF <br/>Indicated","Count"),
+     escape = FALSE) %>% 
+ row_spec(0, bold=T) %>% 
+  column_spec(1, width = "3cm", bold = T) %>% 
+  column_spec(2:4, width = "1.5cm") %>% 
+   kable_styling(position = "center")
+# %>% 
+#   add_header_above(c("","","","","","", "Hazard Ratio 95% CI" = 2)) %>%
+# footnote("") %>%   landscape()
+
+
+
+```
+
+
+### Plot ED Arrivals by Date, flagged by Alcohol Withdrawal/CHF, pre-/post-COVID.
+
+```{r plot-ED-weekly-arrivals-with-period-flag-Alcohol-WD-CHF}
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+ED_Visit_Data_AlcWD_CHF <- Main_Data %>% 
+  dplyr::filter(AlcoholWithdrawIndicatedInEncounter == 1 |
+                ChfIndicatedInEncounter == 1 ) %>% 
+  dplyr::filter(AlcoholWithdrawIndicatedInEncounter + ChfIndicatedInEncounter < 2) %>% 
+  dplyr::mutate(Cause = ifelse(AlcoholWithdrawIndicatedInEncounter == 1, "Alcohol_WD", "CHF")) %>% 
+  dplyr::group_by(Period, Cause,week = as.Date(cut(EdArrivalDate, "week"))) %>% 
+  tally()
+
+View(ED_Visit_Data_AlcWD_CHF) 
+  
+ED_Visit_Data_AlcWD_CHF %>% 
+  ggplot(.,aes(x=week, y=n,  weight= n, color = Period, linetype = Cause)) +
+  geom_point() +
+  geom_smooth() +
+#  facet_wrap(~Cause, nrow = 1) +
+  ggtitle("ED Visits by Week, Alcohol WD/CHF, Pre-/Post-COVID") +
+  ylab("Weekly Count") +
+  xlab("ED Arrival Date (Week)") +
+#  ylim(0,7000) +
+  theme(axis.text.x = element_text(angle = 90)) +
+#  theme(legend.position = c(0.2, 0.8))  +
+  scale_x_date(date_breaks = "months")
+
+
+
+```
+
+
+
+### Plot Inpatient Admissions **Counts** by Date, flagged by Alcohol Withdrawal/CHF, pre-/post-COVID.
+
+```{r plot-weekly-Inpatient-admissions-with-period-flag-Alcohol-WD-CHF}
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+Admission_Data_AlcWD_CHF <- Main_Data %>% 
+    dplyr::filter(EdDisposition == "Admit") %>% 
+  dplyr::filter(AlcoholWithdrawIndicatedInEncounter == 1 |
+                ChfIndicatedInEncounter == 1 ) %>% 
+  dplyr::filter(AlcoholWithdrawIndicatedInEncounter + ChfIndicatedInEncounter < 2) %>% 
+  dplyr::mutate(Cause = ifelse(AlcoholWithdrawIndicatedInEncounter == 1, "Alcohol_WD", "CHF")) %>% 
+  dplyr::group_by(Period, Cause,week = as.Date(cut(EdArrivalDate, "week"))) %>% 
+  tally()
+
+
+
+View(Admission_Data_AlcWD_CHF) 
+  
+Admission_Data_AlcWD_CHF %>% 
+  ggplot(.,aes(x=week, y=n,  weight= n, color = Period, linetype = Cause)) +
+  geom_point() +
+  geom_smooth() +
+#  facet_wrap(~Cause, nrow = 1) +
+  ggtitle("Inpatient Admissions by Week, Alcohol WD/CHF, Pre-/Post-COVID") +
+  ylab("Weekly Count") +
+  xlab("ED Arrival Date (Week)") +
+#  ylim(0,7000) +
+  theme(axis.text.x = element_text(angle = 90)) +
+#  theme(legend.position = c(0.2, 0.8))  +
+  scale_x_date(date_breaks = "months")
+
+
+
+
+```
+
+
+
+
+
+### Plot Inpatient Admission **Rate** by Week, flagged by Alcohol Withdrawal/CHF, pre-/post-COVID.
+
+
+```{r plot-Inpatient-weekly-admissions-with-period-flag-Alcohol-WD-CHF}
+
+
+
+# From: https://stackoverflow.com/questions/40554231/how-to-aggregate-a-dataframe-by-week,
+# answer starting with 'Or cut.Date':
+# also, https://stackoverflow.com/questions/30018187/changing-tick-intervals-when-x-axis-values-are-dates
+
+ED_Visit_Data_AlcWD_CHF <- ED_Visit_Data_AlcWD_CHF %>% dplyr::rename(N_Visit = n)
+Admission_Data_AlcWD_CHF <- Admission_Data_AlcWD_CHF %>% dplyr::rename(N_Admit = n)
+
+Rate_Data_AlcWD_CHF <- dplyr::left_join(ED_Visit_Data_AlcWD_CHF,Admission_Data_AlcWD_CHF, 
+by = c("Period","Cause", "week")) %>% 
+  dplyr::mutate(Admission_Rate = round(N_Admit/N_Visit,2)) 
+View(Rate_Data_AlcWD_CHF)
+
+
+  
+  
+Rate_Data_AlcWD_CHF %>%   
+    ggplot(.,aes(x=week, y=Admission_Rate,  weight= N_Visit, color = Period)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~ Cause, nrow=2) +
+  ggtitle("Inpatient Admission Rate by Week, Alcohol WD/CHF, Pre-/Post-COVID") +
+  ylab("Weekly Admission Rate") +
+  xlab("ED Arrival Date (Week)") +
+  theme(axis.text.x = element_text(angle = 90)) +
+#   theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+
+
+
+```
+
+
+
+```{r add_CY_Quarter-to-Rate_Data_AlcWD_CHF}
+
+Rate_Data_AlcWD_CHF <- Rate_Data_AlcWD_CHF %>% 
+  dplyr::mutate(CY_Month = month(week),
+                CY_Quarter = case_when(
+                  between(CY_Month,1,3) ~ "Q1",
+                  between(CY_Month,4,6) ~ "Q2",
+                  between(CY_Month,7,9) ~ "Q3",
+                  between(CY_Month,10,12) ~ "Q4",
+                  TRUE ~ "Problem"
+                )
+                       )
+
+
+```
+
+
+
+# Run Regression Models
+
+The model will be a Poisson regression, with mean weekly admissions counts dependent on:
+The model will be a Poisson regression modeling the counts of weekly admissions
+as the dependent variable ('outcome').
+
+The independent variables ('predictors') will be
+
+- Weekly ED visits count.  The more visits, the more admissions would be expected.
+- Quarter of the year.  This is to reduce spurious effects due to seasonality.
+- Period (pre-/post-COVID)
+- Condition:  CHF or Alcohol_WD
+
+There will also be <strong>interactions</strong> added to the model, which will help answer some
+key questions.
+
+- Period*Condition:  CHF or Alcohol_WD:  This allows for the change in mean 
+weekly admission counts between the pre-COVID and COVID periods to be different 
+for the CHF and Alcohol W/D patients.
+
+- Quarter*Condition:  CHF or Alcohol_WD:  This allows for the changes in 
+mean weekly admission counts over time periods ('seasonality') to be different 
+for the CHF and Alcohol W/D patients.
+
+
+
+
+
+
+```{r run-poisson-regression-base-model}
+
+m1 <- glm(Case_Count ~ Patient_Count + 
+            Period +  CY_Quarter + Infection_Source + ICU +
+            Period*ICU + Period*Infection_Source +  Infection_Source*ICU +
+            CY_Quarter*ICU, 
+                  family="poisson", data=Matched_Data)
+
+
+
+
+
+cov.m1 <- vcovHC(m1, type="HC0")
+std.err <- sqrt(diag(cov.m1))
+r.est <- cbind(Estimate= coef(m1), "Robust SE" = std.err,
+"Pr(>|z|)" = 2 * pnorm(abs(coef(m1)/std.err), lower.tail=FALSE),
+LL = coef(m1) - 1.96 * std.err,
+UL = coef(m1) + 1.96 * std.err)
+
+r.est
+
+
+```
