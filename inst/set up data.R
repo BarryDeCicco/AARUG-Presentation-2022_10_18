@@ -80,8 +80,23 @@ ER_df <- ER_df %>%
       Month_effect + random_COVID)
     )
 
-####  Plot the data                               ####
+# View the data set:
 
+View(ER_df)
+
+
+# Trim the data to needed variables:
+
+ER_df <- ER_df %>% dplyr::select(
+  Calendar_Date, Quarter_num, Month_num,
+  Admission_COVID,Admissions_Other 
+)
+
+ 
+#### Pivot the data                     ####
+
+ER_df %>%  pivot_longer(!c(Calendar_Date, Quarter_num, Month_num),
+             names_to = Cause, values_to = count)
 
 #### Save the data set.                 ####
 
@@ -101,6 +116,7 @@ histogram_data <- data.frame(value=rnorm(100),
 View(histogram_data)
 
 
+
 histogram_data %>% ggplot(., aes(x=value)) +
   geom_histogram()
 
@@ -108,4 +124,13 @@ histogram_data %>% ggplot(., aes(x=value)) +
 histogram_data %>% ggplot(., aes(x=value)) +
   geom_histogram() +
   facet_wrap(~group)
+
+group1 <- histogram_data %>% dplyr::filter(group == "Group 1") %>% dplyr::select(value) %>% rename(group1 = value)
+group2 <- histogram_data %>% dplyr::filter(group == "Group 2") %>% dplyr::select(value) %>% rename(group2 = value)
+
+wide_histogram_data <- cbind(group1, group2) 
+
+View(wide_histogram_data)
+
+
 
