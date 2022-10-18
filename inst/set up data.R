@@ -83,14 +83,29 @@ ER_df <- ER_df %>%
 ####  Plot the data                               ####
 
 
-
-
-
-
-
-
-
 #### Save the data set.                 ####
 
 save(ER_df, 
      file = "COVID_Mock_Data.Rdata")
+
+#### Histogram                       ####
+
+# from https://r-graph-gallery.com/220-basic-ggplot2-histogram.html
+# Data 
+
+
+
+histogram_data <- data.frame(value=rnorm(100),
+  group = sample(c("Group 1", "Group 2")))
+
+View(histogram_data)
+
+
+histogram_data %>% ggplot(., aes(x=value)) +
+  geom_histogram()
+
+
+histogram_data %>% ggplot(., aes(x=value)) +
+  geom_histogram() +
+  facet_wrap(~group)
+
