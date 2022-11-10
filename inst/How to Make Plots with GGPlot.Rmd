@@ -70,7 +70,7 @@ library(rrcov)
 
 ## Set up time frame for data:
 
-```{r create-data-times}
+```{r create-dates-times}
 
 
 ### Create Data for simulated Pre-\Post-COVID study:
@@ -89,6 +89,9 @@ Period <- ifelse(Calendar_Date < ymd('2020-03-01'),
                  "Pre-COVID","Post=COVID")
 
 table(Calendar_Date,Period, useNA = 'always')
+
+
+```
 
 
 ####      Form data set:                                     ####
