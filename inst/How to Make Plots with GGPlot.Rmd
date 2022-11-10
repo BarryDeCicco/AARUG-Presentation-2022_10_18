@@ -70,7 +70,7 @@ require(gridExtra)  # for printing a grid of plots.
 library(broom)      # both of these are for getting nice output
 library("tidyr")    # from linear mixed models.
 
-library("cstatpower")
+# library("cstatpower")
 library("ggplot2")
 library("effectsize")
 library(hrbrthemes)  # for theme_ipsum()
