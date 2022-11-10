@@ -105,7 +105,7 @@ Calendar_Date <- rep(month_sequence_raw,100)
 Period <- ifelse(Calendar_Date < ymd('2020-03-01'),
                  "Pre-COVID","Post=COVID")
 
-table(Calendar_Date,Period_raw, useNA = 'always')
+table(Calendar_Date,Period, useNA = 'always')
 
 
 ```
