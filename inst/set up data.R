@@ -1,5 +1,48 @@
 
 
+
+# load-packages
+
+library(emmeans)    # for emmeans
+library(lme4) 
+library(flextable)  # for tables with .rtf output
+library(psych)      # for ICC
+library(magrittr)
+library(rmarkdown)  # For pandoc_version()
+library(Hmisc)      # for label()
+library(here)       # for here()
+library(devtools)   # for session_info()
+# library(TFCBTLS)    # for git_report()
+
+library(kableExtra) # for pretty tables
+library(tidyquant)  # for date conversions - zoo()
+
+library(pastecs)    # for stat.desc
+library(tidyverse)
+
+library(readxl)     # For reading in .xlsx and .xsl files, without using Java.
+# library(xlsx)       # to import from Excel (cohort dates)
+
+
+library(janitor)    # for the tabyl command  (nice tables)
+
+library(stringr)    # string work, such as st_detect()
+
+require(gridExtra)  # for printing a grid of plots.
+
+library(broom)      # both of these are for getting nice output
+library("tidyr")    # from linear mixed models.
+
+# library("cstatpower")
+library("ggplot2")
+library("effectsize")
+library(hrbrthemes)  # for theme_ipsum()
+
+
+library(foreign)    # for importing SPSS data sets.
+library(robustbase) # for robust MH distances
+library(rrcov)
+
 ### Create Data for simulated Pre-\Post-COVID study:
 
 #### Create raw vectors:                                     ####
@@ -56,14 +99,6 @@ with(ER_df, table(Month_num,ER_df$Month_effect,
 hist(ER_df$Month_effect)
 
 
-ggplot(ER_df) +
-  aes(x=as.factor(Month_num), y=Month_effect) +
-  geom_bar(stat = "identity")
-
-ggplot(ER_df) +
-  aes(x=as.factor(Month_num), y=Month_effect) +
-  geom_bar(stat = "summary", fun.y = "mean")
-
 #### Set up the COVID and Other Respiratory Rate data:     ####
 
 set.seed(1234567890)
@@ -88,20 +123,95 @@ View(ER_df)
 # Trim the data to needed variables:
 
 ER_df <- ER_df %>% dplyr::select(
-  Calendar_Date, Quarter_num, Month_num,
+  Calendar_Date, Period, Quarter_num, Month_num,
   Admission_COVID,Admissions_Other 
 )
 
+
+View(ER_df)
  
 #### Pivot the data                     ####
 
-ER_df %>%  pivot_longer(!c(Calendar_Date, Quarter_num, Month_num),
-             names_to = Cause, values_to = count)
+ER_Long_df <- ER_df %>%  pivot_longer(!c(Calendar_Date, Period, Quarter_num, Month_num),
+             names_to = "Cause", values_to = "Count")
+
+View(ER_Long_df)
+
 
 #### Save the data set.                 ####
 
-save(ER_df, 
-     file = "COVID_Mock_Data.Rdata")
+save(ER_Long_df, 
+     file = "ER_Long_df.Rdata")
+
+
+####    Plots for the ER data:                        ####
+load("ER_Long_df.Rdata")
+
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count)) +
+  geom_point() 
+
+
+
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
+               color = Period)) +
+  geom_point() 
+
+
+
+
+
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
+               color = Period)) +
+  geom_point() +
+  facet_wrap(~Cause, nrow =  = 1)
+
+
+
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
+               color = Period)) +
+  geom_point() +
+  facet_wrap(~Cause, nrow = 2)
+
+
+
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
+               color = Period)) +
+  geom_point() +
+  facet_wrap(~Cause, nrow = 2)+
+  ggtitle("ER Visit Counts by Week, COVID/All Others, Pre-/Post-COVID") +
+  ylab("Weekly Admission Rate") +
+  xlab("ED Arrival Date (Week)") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  #   theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months")
+
+ 
+[1] "Calendar_Date" "Quarter_num"   "Month_num"    
+[4] "Cause"         "Count" 
+
+
+
+
+
+
+geom_smooth() +
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Histogram                       ####
 
