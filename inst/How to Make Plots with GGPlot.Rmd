@@ -94,7 +94,12 @@ table(Calendar_Date,Period, useNA = 'always')
 ```
 
 
-####      Form data set:                                     ####
+
+##      Form data set:       
+
+```{r form-data-set}
+
+
 
 ER_df <- cbind(as.character(Calendar_Date),Period) %>% 
   as.data.frame() %>% 
@@ -123,6 +128,8 @@ ER_df <- cbind(as.character(Calendar_Date),Period) %>%
       Month_num == 12 ~ as.integer(4),
       TRUE ~NA_integer_  )
   )
+
+```
 
 
 lapply(ER_df, class)
