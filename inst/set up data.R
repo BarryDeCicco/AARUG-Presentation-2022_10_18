@@ -166,7 +166,7 @@ ER_Long_df %>%
   ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
                color = Period)) +
   geom_point() +
-  facet_wrap(~Cause, nrow =  = 1)
+  facet_wrap(~Cause, nrow =  1)
 
 
 
