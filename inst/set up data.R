@@ -191,9 +191,6 @@ ER_Long_df %>%
   scale_x_date(date_breaks = "months")
 
  
-[1] "Calendar_Date" "Quarter_num"   "Month_num"    
-[4] "Cause"         "Count" 
-
 
 
 ER_Long_df %>% 
