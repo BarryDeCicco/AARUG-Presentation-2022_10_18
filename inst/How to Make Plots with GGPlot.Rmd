@@ -129,6 +129,15 @@ ER_df <- cbind(as.character(Calendar_Date),Period) %>%
       TRUE ~NA_integer_  )
   )
 
+
+# lapply(ER_df, class)
+# 
+# with(ER_df, table(Month_num,ER_df$Month_effect, 
+#                   useNA='always'))
+# 
+# hist(ER_df$Month_effect)
+
+
 ```
 
 ## Set up the COVID and Other Respiratory Rate data:  
@@ -153,13 +162,6 @@ ER_df <- ER_df %>%
 
 
 ```
-
-lapply(ER_df, class)
-
-with(ER_df, table(Month_num,ER_df$Month_effect, 
-                  useNA='always'))
-
-hist(ER_df$Month_effect)
 
 
 
