@@ -189,6 +189,11 @@ View(ER_Long_df)
 save(ER_Long_df, 
      file = "ER_Long_df.Rdata")
 
+# Remove data set; load later:
+
+rm(ER_Long_df)
+
+
 
 ```
 
