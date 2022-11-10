@@ -196,10 +196,18 @@ ER_Long_df %>%
 
 
 
-
-
-
-geom_smooth() +
+ER_Long_df %>% 
+  ggplot(.,aes(x=Calendar_Date, y=Count,  weight= Count,
+               color = Period)) +
+  geom_point() +
+  facet_wrap(~Cause, nrow = 2)+
+  ggtitle("ER Visit Counts by Week, COVID/All Others, Pre-/Post-COVID") +
+  ylab("Weekly Admission Rate") +
+  xlab("ED Arrival Date (Week)") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  #   theme(legend.position = c(0.2, 0.2))  +
+  scale_x_date(date_breaks = "months") + 
+  geom_smooth() 
 
 
 
