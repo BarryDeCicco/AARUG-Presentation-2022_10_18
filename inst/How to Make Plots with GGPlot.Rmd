@@ -131,14 +131,11 @@ ER_df <- cbind(as.character(Calendar_Date),Period) %>%
 
 ```
 
+## Set up the COVID and Other Respiratory Rate data:  
 
-lapply(ER_df, class)
 
-with(ER_df, table(Month_num,ER_df$Month_effect, 
-                  useNA='always'))
+```{r add-covid-data}
 
-hist(ER_df$Month_effect)
-#### Set up the COVID and Other Respiratory Rate data:     ####
 
 set.seed(1234567890)
 
@@ -153,6 +150,18 @@ ER_df <- ER_df %>%
     Admission_COVID = ifelse(Period == "Pre-COVID",0,
       Month_effect + random_COVID)
     )
+
+
+```
+
+lapply(ER_df, class)
+
+with(ER_df, table(Month_num,ER_df$Month_effect, 
+                  useNA='always'))
+
+hist(ER_df$Month_effect)
+
+
 
 # View the data set:
 
