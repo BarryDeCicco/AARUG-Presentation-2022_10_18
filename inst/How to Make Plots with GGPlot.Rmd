@@ -163,6 +163,7 @@ ER_df <- ER_df %>%
 
 ```
 
+```{r convert-data-to, eval=FALSE}
 
 
 # View the data set:
@@ -196,6 +197,10 @@ save(ER_Long_df,
 # Remove data set; load later:
 
 rm(ER_Long_df)
+
+
+```
+
 
 
 
